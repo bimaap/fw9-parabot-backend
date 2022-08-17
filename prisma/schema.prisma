@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cart {
+  id          Int       @id @default(autoincrement())
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  user_id     Int?
+  product_id  Int?
+  quantity    Decimal?  @db.Decimal
+  total_price Decimal?  @db.Decimal
+  shipping    String?   @db.VarChar
+  coupon_id   Int?
+  coupons     coupons?  @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  products    products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders      orders[]
+}
+
+model categories {
+  id             Int        @id @default(autoincrement())
+  created_at     DateTime?  @default(now()) @db.Timestamptz(6)
+  category_name  String?    @db.VarChar
+  category_image String?    @db.VarChar
+  products       products[]
+}
+
+model chats {
+  id                              Int             @id @default(autoincrement())
+  created_at                      DateTime?       @default(now()) @db.Timestamptz(6)
+  sender_id                       Int?
+  recepient_id                    Int?
+  users_chats_recepient_idTousers users?          @relation("chats_recepient_idTousers", fields: [recepient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_chats_sender_idTousers    users?          @relation("chats_sender_idTousers", fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  chats_content                   chats_content[]
+}
+
+model chats_content {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  content    String?   @db.VarChar
+  chat_id    Int?
+  chats      chats?    @relation(fields: [chat_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model checkouts {
+  id           Int       @id @default(autoincrement())
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  name         String?   @db.VarChar
+  phone_number String?   @db.VarChar
+  address      String?
+  payment_id   Int?
+  payments     payments? @relation(fields: [payment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orders       orders[]
+}
+
+model coupons {
+  id          Int       @id @default(autoincrement())
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  coupon_name String?   @db.VarChar
+  discount    Decimal?  @db.Decimal
+  category    String?   @db.VarChar
+  code        String?   @db.VarChar
+  cart        cart[]
+}
+
+model orders {
+  id             Int        @id @default(autoincrement())
+  created_at     DateTime?  @default(now()) @db.Timestamptz(6)
+  cart_id        Int?
+  status_payment String?    @db.VarChar
+  checkout_id    Int?
+  cart           cart?      @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  checkouts      checkouts? @relation(fields: [checkout_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model payments {
+  id           Int         @id @default(autoincrement())
+  created_at   DateTime?   @default(now()) @db.Timestamptz(6)
+  payment_name String?     @db.VarChar
+  payment_desc String?
+  logo         String?     @db.VarChar
+  bank_account String?     @db.VarChar
+  checkouts    checkouts[]
+}
+
+model products {
+  id              Int         @id @default(autoincrement())
+  created_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  product_name    String?     @db.VarChar
+  price           Decimal?    @default(0) @db.Decimal
+  stock           Decimal?    @default(0) @db.Decimal
+  product_images  String?     @default("[]") @db.VarChar
+  is_archive      Boolean?
+  discount        Decimal?    @db.Decimal
+  stock_condition Boolean?
+  sold            Decimal?    @db.Decimal
+  sku             String?     @db.VarChar
+  color           String?     @db.VarChar
+  size            String?     @db.VarChar
+  brand           String?     @db.VarChar
+  category_id     Int?
+  categories      categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cart            cart[]
+  reviews         reviews[]
+  wishlist        wishlist[]
+}
+
+model profiles {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  full_name  String?   @db.VarChar
+  gender     String?   @db.VarChar
+  image      String?   @db.VarChar
+  store_name String?   @db.VarChar
+  store_desc String?
+  phone_num  String?   @db.VarChar
+  bio        String?
+  user_id    Int?
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reviews {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  user_id    Int?
+  product_id Int?
+  content    String?
+  rating     Int?
+  products   products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model users {
+  id                              Int        @id @default(autoincrement())
+  created_at                      DateTime?  @default(now()) @db.Timestamptz(6)
+  username                        String?    @db.VarChar
+  email                           String     @db.VarChar
+  password                        String     @db.VarChar
+  role                            String     @db.VarChar
+  cart                            cart[]
+  chats_chats_recepient_idTousers chats[]    @relation("chats_recepient_idTousers")
+  chats_chats_sender_idTousers    chats[]    @relation("chats_sender_idTousers")
+  profiles                        profiles[]
+  reviews                         reviews[]
+  wishlist                        wishlist[]
+}
+
+model wishlist {
+  id          Int       @id @default(autoincrement())
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  product_id  Int?
+  user_id     Int?
+  is_favorite Boolean?
+  products    products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
