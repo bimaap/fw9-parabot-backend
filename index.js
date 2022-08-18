@@ -7,12 +7,18 @@ app.use(cors());
 
 app.use(express.urlencoded({extended: false}));
 
-//images folder location ya gaes nanti di uncomment aja
-// app.use('/images', express.static('assets'));
+app.use('/images', express.static('assets'));
 
-//here untuk router nanti gaes
+app.use('/',require('./src/routers'));
 
 const port = process.env.PORT;
+
+app.use('*',(req, res)=>{
+    return res.status(404).json({
+      success: false,
+      message: 'Not Found'
+    });
+  });
 
 app.listen(port, ()=>{
     console.log(`Our server is running on port: ${port}`);
