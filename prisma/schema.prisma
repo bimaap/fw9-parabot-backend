@@ -105,6 +105,7 @@ model products {
   size            String?     @db.VarChar
   brand           String?     @db.VarChar
   category_id     Int?
+  description     String?
   categories      categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   cart            cart[]
   reviews         reviews[]
