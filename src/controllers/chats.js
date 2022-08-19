@@ -15,7 +15,7 @@ exports.wrapperChat = async(req,res) =>{
 };
 
 exports.contentChat = async(req,res) => {
-    const id = req.body.chat_id
+    const id = req.params.chat_id
     const chat = await chatsModel.sendContentModel(id,req.body);
     if(chat.error){
         return errorResponse(chat.error,res)
