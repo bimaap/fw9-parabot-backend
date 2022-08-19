@@ -138,15 +138,16 @@ model reviews {
 }
 
 model users {
-  id                              Int        @id @default(autoincrement())
-  created_at                      DateTime?  @default(now()) @db.Timestamptz(6)
-  username                        String?    @db.VarChar
-  email                           String     @db.VarChar
-  password                        String     @db.VarChar
-  role                            String     @db.VarChar
+  id                              Int            @id @default(autoincrement())
+  created_at                      DateTime?      @default(now()) @db.Timestamptz(6)
+  username                        String?        @db.VarChar
+  email                           String         @db.VarChar
+  password                        String         @db.VarChar
+  role                            String         @db.VarChar
   cart                            cart[]
-  chats_chats_recepient_idTousers chats[]    @relation("chats_recepient_idTousers")
-  chats_chats_sender_idTousers    chats[]    @relation("chats_sender_idTousers")
+  chats_chats_recepient_idTousers chats[]        @relation("chats_recepient_idTousers")
+  chats_chats_sender_idTousers    chats[]        @relation("chats_sender_idTousers")
+  notification                    notification[]
   profiles                        profiles[]
   reviews                         reviews[]
   wishlist                        wishlist[]
@@ -160,4 +161,13 @@ model wishlist {
   is_favorite Boolean?
   products    products? @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model notification {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  tittle     String?   @db.VarChar
+  text       String?
+  user_id    Int?
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
