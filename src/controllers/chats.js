@@ -15,7 +15,7 @@ exports.wrapperChat = async(req,res) =>{
 };
 
 exports.contentChat = async(req,res) => {
-    const id = req.params.chat_id
+    const id = req.body.chat_id
     const chat = await chatsModel.sendContentModel(id,req.body);
     if(chat.error){
         return errorResponse(chat.error,res)
@@ -27,7 +27,8 @@ exports.contentChat = async(req,res) => {
 
 exports.getAllWrapper = async(req,res) =>{
     const id = req.authUser.id;
-    const data = await chatsModel.getAllWrapperModel(id);
+    const data = await chatsModel.getAllWrapperModel(parseInt(id));
+    console.log(data);
     if(data.error){
         return errorResponse(data.error,res);
     }
@@ -37,8 +38,8 @@ exports.getAllWrapper = async(req,res) =>{
 };
 
 exports.getAllChat = async(req,res) => {
-    const id = req.body.chat_id;
-    const data = await chatsModel.getAllChatsModel(id);
+    const id = req.params.id;
+    const data = await chatsModel.getAllChatsModel(parseInt(id));
     if(data.error){
         return errorResponse(data.error);
     }
