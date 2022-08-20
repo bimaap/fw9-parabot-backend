@@ -1,6 +1,7 @@
 const chatsModel = require('../models/chats');
 const errorResponse = require('../helpers/errorResponse');
 const response = require('../helpers/standardResponse');
+const { Result } = require('express-validator');
 
 exports.wrapperChat = async(req,res) =>{
     const sender = parseInt(req.authUser.id);
@@ -24,25 +25,32 @@ exports.contentChat = async(req,res) => {
     }
 };
 
-exports.getAllWrapper = async(req,res) =>{
+exports.wrapperGetAll = (req,res) =>{
     const id = parseInt(req.authUser.id);
-    const data = await chatsModel.getAllWrapperModel(parseInt(id));
-    console.log(data);
-    if(data.error){
-        return errorResponse(data.error,res);
-    }
-    if(data.data){
-        return response(res,'Showing All Chat here',data.data);
-    }
+    chatsModel.wrapperChatModel(id,(err,result)=>{
+        if(err){
+            console.log(err);
+            return errorResponse(err,res);
+        }
+        if(result.rowCount<1){
+            return response(res,'ID Not Found',null,null,400);
+        }
+        return response(res,'Show All Wrapper',result.rows);
+    })
 };
 
 exports.getAllChat = async(req,res) => {
     const id = parseInt(req.authUser.id);
-    const data = await chatsModel.getAllChatsModel(parseInt(id));
-    if(data.error){
-        return errorResponse(data.error);
-    }
-    if(data.data){
-        return response(res,'Showing All Content', data.data);
-    }
+    chatsModel.getAllChatsModel(id,(err,result)=>{
+        if(err){
+            console.log(err);
+            return errorResponse(err,res);
+        }
+        if(result.rowCount<1){
+            return response(res,'ID Not Found',null,null,400);
+        }
+        else{
+            return response(res,'Show All Conversation',result.rows);
+        }
+    })
 };

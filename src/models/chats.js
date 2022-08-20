@@ -1,3 +1,4 @@
+const db = require('../helpers/db');
 const prisma = require('../helpers/prisma');
 
 exports.sendChatModel = async(sender,recepient) =>{
@@ -40,41 +41,42 @@ exports.sendContentModel = async(sender,body) => {
     }
 };
 
-exports.getAllWrapperModel = async(id) =>{
-    const result = {};
-    try{
-        const data = await prisma.users.findMany({
-            where: {
-                id
-            },
-            include:{
-                profiles:true,
-                chats_chats_recepient_idTousers:true,
-                chats_chats_sender_idTousers:true,
+exports.wrapperChatModel = (id,cb) =>{
+    const que = `SELECT * FROM chats WHERE sender_id=${id} OR recepient_id=${id}`
+    db.query(que,(err,res)=>{
+        if(err){
+            cb(err);
+        }else{
+            if(res.rows[0].sender_id==id){
+                const que = `SELECT profiles.full_name,chats.id,chats.recepient_id,chats.sender_id FROM profiles JOIN chats ON chats.recepient_id=profiles.user_id WHERE profiles.user_id=${res.rows[0].recepient_id}`
+                db.query(que,(err,res)=>{
+                    if(err){
+                        cb(err);
+                    }else{
+                        cb(err,res);
+                    }
+                });
+            }else{
+                const que = `SELECT profiles.full_name,chats.id,chats.recepient_id,chats.sender_id FROM profiles JOIN chats ON chats.sender_id=profiles.user_id WHERE profiles.user_id=${res.rows[0].sender_id}`
+                db.query(que,(err,res)=>{
+                    if(err){
+                        cb(err);
+                    }else{
+                        cb(err,res);
+                    }
+                });
             }
-        })
-        result.data = data;
-        return result;
-    }
-    catch(e){
-        result.error = e;
-        return result;
-    }
+        }
+    });
 };
 
-exports.getAllChatsModel = async(id) =>{
-    const result = {};
-    try{
-        const data = await prisma.chats_content.findMany({
-            where:{
-                chat_id:id
-            }
-        })
-        result.data=data;
-        return result;
-    }
-    catch(e){
-        result.error=e;
-        return result;
-    }
+exports.getAllChatsModel = (id,cb) =>{
+    const que = `SELECT * FROM chats_content WHERE chat_id=${id}`
+    db.query(que,(err,res)=>{
+        if(err){
+            cb(err);
+        }else{
+            cb(err,res)
+        }
+    });
 }; 
