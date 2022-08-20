@@ -3,9 +3,8 @@ const errorResponse = require('../helpers/errorResponse');
 const response = require('../helpers/standardResponse');
 
 exports.wrapperChat = async(req,res) =>{
-    const sender = req.authUser.id
-    const receiver = req.body.receiver_id
-    const wrapper = await chatsModel.sendChatModel(sender,receiver);
+    const sender = parseInt(req.authUser.id);
+    const wrapper = await chatsModel.sendChatModel(sender,req.body.recepient);
     if(wrapper.error){
         return errorResponse (wrapper.error,res);
     }
@@ -15,8 +14,8 @@ exports.wrapperChat = async(req,res) =>{
 };
 
 exports.contentChat = async(req,res) => {
-    const id = req.body.chat_id
-    const chat = await chatsModel.sendContentModel(id,req.body);
+    const sender = parseInt(req.authUser.id);
+    const chat = await chatsModel.sendContentModel(sender,req.body);
     if(chat.error){
         return errorResponse(chat.error,res)
     }
@@ -26,7 +25,7 @@ exports.contentChat = async(req,res) => {
 };
 
 exports.getAllWrapper = async(req,res) =>{
-    const id = req.authUser.id;
+    const id = parseInt(req.authUser.id);
     const data = await chatsModel.getAllWrapperModel(parseInt(id));
     console.log(data);
     if(data.error){
@@ -38,7 +37,7 @@ exports.getAllWrapper = async(req,res) =>{
 };
 
 exports.getAllChat = async(req,res) => {
-    const id = req.params.id;
+    const id = parseInt(req.authUser.id);
     const data = await chatsModel.getAllChatsModel(parseInt(id));
     if(data.error){
         return errorResponse(data.error);
