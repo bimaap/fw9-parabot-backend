@@ -1,11 +1,13 @@
 const prisma = require('../helpers/prisma');
 
-exports.createNotificationModel = async(data) =>{
+exports.createNotificationModel = async(id,body) =>{
     const result = {};
     try{
         const notif = await prisma.notification.create({
             data:{
-                data
+                user_id:parseInt(id),
+                tittle:body.tittle,
+                text:body.text
             }
         })
         result.data=notif;

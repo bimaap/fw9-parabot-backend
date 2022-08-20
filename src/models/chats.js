@@ -5,8 +5,8 @@ exports.sendChatModel = async(sender,recepient) =>{
     try{
         const wrapper = await prisma.chats.create({
             data:{
-                sender_id:sender,
-                recepient_id:recepient,
+                recepient_id:parseInt(recepient),
+                sender_id:sender
             }
         });
         result.data =  wrapper
@@ -19,17 +19,18 @@ exports.sendChatModel = async(sender,recepient) =>{
     }
 };
 
-exports.sendContentModel = async(id,data) => {
+exports.sendContentModel = async(sender,body) => {
     const result = {};
     try{
-        const data = await prisma.chats_content.create({
+        const chat = await prisma.chats_content.create({
             data:{
-                content,
-                created_at,
-                chat_id:id
+                content:body.content,
+                recepient_id:parseInt(body.recepient_id),
+                sender_id:sender,
+                chat_id:parseInt(body.chat_id)
             }
         })
-        result.data = data;
+        result.data = chat;
         return result;
     }
     catch(e){
@@ -42,10 +43,14 @@ exports.sendContentModel = async(id,data) => {
 exports.getAllWrapperModel = async(id) =>{
     const result = {};
     try{
-        const data = await prisma.chats.findMany({
+        const data = await prisma.users.findMany({
             where: {
-                recepient_id:id,
-                sender_id:id
+                id
+            },
+            include:{
+                profiles:true,
+                chats_chats_recepient_idTousers:true,
+                chats_chats_sender_idTousers:true,
             }
         })
         result.data = data;

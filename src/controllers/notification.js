@@ -14,12 +14,12 @@ exports.createNotif = async(req,res)=>{
 };
 
 exports.readNotif = async(req,res)=>{
-    const id = req.authUser.id;
+    const id = parseInt(req.authUser.id);
     const notif = await notificationModel.readNotificationModel(id);
     if(notif.error){
         return errorResponse(notif.error,res);
     }
     if(notif.data){
-        return response(res,'Notif created',notif.data);
+        return response(res,'Showing Notif',notif.data);
     }
 }
