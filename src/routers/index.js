@@ -11,4 +11,14 @@ router.use("/profile", profileCustomerRoutes);
 router.use("/profile", profileSellerRoutes);
 
 
-module.exports = router;
+router.use('/',require('./chats'));
+router.use("/checkouts", require("./checkouts"));
+router.use('/',require('./notification'));
+router.use('/', require('./product'));
+router.use('/',require('./auth'))
+router.use('/', require('./categories'));
+router.use('/', require('./wishlist'));
+router.use('/', require('./cart'));
+
+module.exports=router
+

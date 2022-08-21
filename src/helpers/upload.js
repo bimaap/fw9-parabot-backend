@@ -7,21 +7,28 @@ const storage = new CloudinaryStorage ({
   cloudinary:cloudinary,
   params : {
     folder: 'parabot',
-    format: (req,file) => 'jpg',
-    public_id: (req,file) => {
-      const timeStamp = new Date().getTime()
-      return `${timeStamp}`
-    }
+    format: async (req,file) => {
+      // console.log(req);
+      const ext = file.mimetype.split('/')[1];
+      // console.log(ext)
+      // console.log(file);
+      return ext;
+    },
+    public_id: (req,file) => new Date().getTime()+Math.random(1000)
+    // {
+    //   const timeStamp = new Date().getTime()
+    //   return `${timeStamp}`
+    // }
   }
 })
 
 const upload = multer({
   storage,
   limits: {
-    fileSize: 1 * 1000 * 1000,
+    fileSize: 5 * 1000 * 1000,
   },
   fileFilter: (req, file, cb) => {
-    const allowExt = ['image/jpg', 'image/png', 'image/jpeg'];
+    const allowExt = ['image/jpg', 'image/png', 'image/jpeg', 'image/webp'];
     if (allowExt.includes(file.mimetype)) {
       cb(null, true);
     } else {
