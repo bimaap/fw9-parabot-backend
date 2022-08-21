@@ -23,6 +23,30 @@ exports.getAllProduct = async (req, res) => {
     }
 }
 
+exports.getAllProductsUser = async (req, res) => {
+    const idUser = req.authUser.id;
+    const {limit=10, page=1}=req.query;
+    const offset = (page-1) * limit;
+    const pageInfo = {};
+    try {
+        const products = await productModel.getAllProductsUser(idUser, parseInt(limit,10), offset);
+        if(products?.length<1){
+            return response(res, 'Failed to get data. Data is empty', null, null, 400);
+        } else {
+            const countData = await productModel.countAllProductsUser(idUser);
+            pageInfo.totalData = countData;
+            pageInfo.pages = Math.ceil(countData/limit);
+            pageInfo.currentPage = parseInt(page);
+            pageInfo.prevPage = pageInfo.currentPage > 1 ? pageInfo.currentPage - 1 : null;
+            pageInfo.nextPage = pageInfo.currentPage < pageInfo.pages ? pageInfo.currentPage + 1: null;
+            return response(res, 'success get data products', products, pageInfo);
+        }
+    } catch (error) {
+        console.log(error);
+        return errorResponse(error, res);
+    }
+}
+
 exports.getProductById = async (req, res) => {
     // console.log(req.params)
     const idProduct = req.params.id;
@@ -39,6 +63,7 @@ exports.getProductById = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
+    const idUser = req.authUser.id;
     req.body.price = parseInt(req.body.price, 10);
     req.body.stock = parseInt(req.body.stock, 10);
     if(req.body.stock_condition){
@@ -60,6 +85,7 @@ exports.createProduct = async (req, res) => {
     req.body.sold=0;
     
     try {
+        req.body.user_id = idUser;
         const product = await productModel.createProduct(req.body);
         return response(res, 'Success create product', product);
     } catch (error) {

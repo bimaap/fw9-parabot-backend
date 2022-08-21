@@ -110,7 +110,9 @@ model products {
   brand           String?     @db.VarChar
   category_id     Int?
   description     String?
+  user_id         Int?
   categories      categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users           users?      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   cart            cart[]
   reviews         reviews[]
   wishlist        wishlist[]
@@ -154,6 +156,7 @@ model users {
   chats_content_chats_content_recepient_idTousers chats_content[] @relation("chats_content_recepient_idTousers")
   chats_content_chats_content_sender_idTousers    chats_content[] @relation("chats_content_sender_idTousers")
   notification                                    notification[]
+  products                                        products[]
   profiles                                        profiles[]
   reviews                                         reviews[]
   wishlist                                        wishlist[]
