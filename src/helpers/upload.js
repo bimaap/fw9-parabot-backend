@@ -7,11 +7,12 @@ const storage = new CloudinaryStorage ({
   cloudinary:cloudinary,
   params : {
     folder: 'parabot',
-    format: (req,file) => 'jpg',
-    public_id: (req,file) => {
-      const timeStamp = new Date().getTime()
-      return `${timeStamp}`
-    }
+    format: (req,file) => 'png',
+    public_id: (req,file) => new Date().getTime()+Math.random(1000)
+    // {
+    //   const timeStamp = new Date().getTime()
+    //   return `${timeStamp}`
+    // }
   }
 })
 
@@ -21,7 +22,7 @@ const upload = multer({
     fileSize: 1 * 1000 * 1000,
   },
   fileFilter: (req, file, cb) => {
-    const allowExt = ['image/jpg', 'image/png', 'image/jpeg'];
+    const allowExt = ['image/jpg', 'image/png', 'image/jpeg', 'image/webp'];
     if (allowExt.includes(file.mimetype)) {
       cb(null, true);
     } else {
