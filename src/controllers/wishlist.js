@@ -1,17 +1,7 @@
+
 const wishlistModel = require('../models/wishlist');
 const errorResponse = require('../helpers/errorResponse');
 const response = require('../helpers/standardResponse');
-
-exports.createWishlist = async(req,res)=>{
-    const id = req.authUser.id;
-    const wishlist = await wishlistModel.createWishlistModel(id,req.body);
-    if(wishlist.error){
-        return errorResponse(wishlist.error,res);
-    }
-    if(wishlist.data){
-        return response(res,'wishlist created',wishlist.data);
-    }
-};
 
 exports.readWishlist = async(req,res)=>{
     const id = parseInt(req.authUser.id);
@@ -35,3 +25,21 @@ exports.updateWishlist=(req, res)=>{
       }
     });
   };
+
+
+exports.createWishlist = async (req, res) => {
+    const idUser = req.authUser.id;
+    try {
+        req.body.product_id = parseInt(req.body.product_id, 10);
+        req.body.user_id = idUser;
+        if(req.body.is_favorite == 'true'){
+            req.body.is_favorite = true;
+        } else {
+            req.body.is_favorite = false;
+        }
+        const wishlist = await wishlistModel.createWishlist(req.body)
+        return response(res, 'success add product to wishlist', wishlist);
+    } catch (error) {
+        return errorResponse(error, res);
+    }
+}
