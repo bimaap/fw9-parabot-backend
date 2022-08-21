@@ -4,5 +4,6 @@ const router = require('express').Router();
 router.use('/',require('./chats'));
 router.use("/checkouts", require("./checkouts"));
 router.use('/',require('./notification'));
+router.use('/', require('./product'));
 
 module.exports=router
