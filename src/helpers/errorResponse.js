@@ -40,10 +40,11 @@ const errorResponse = (err, res) => {
     return response(res, 'Error', eres, null, 400);
   }
   // rating
-  const eres = handlingErr();
-  if(eres == null){
-    return response(res, 'Error', null, null, 400);  
-  }
+  // const eres = handlingErr();
+  // if(eres == null){
+  //   return response(res, 'Error', null, null, 400);  
+  // }
+  return response(res, 'Error', null, null, 400);  
 };
 
 module.exports = errorResponse;
