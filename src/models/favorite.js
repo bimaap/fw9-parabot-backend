@@ -1,16 +1,35 @@
-
 const prisma = require('../helpers/prisma');
 const db = require('../helpers/db');
 
-exports.readWishlistModel = async(id) => {
+exports.createFavoriteModel = async(id,body) =>{
     const result = {};
     try{
-        const wishlist = await prisma.wishlist.findMany({
+        const favorite = await prisma.wishlist.create({
+            data:{
+                user_id:parseInt(id),
+                product_id:body.product_id,
+                is_favorite:body.is_favorite
+            }
+        })
+        result.data=favorite;
+        return result;
+    }
+    catch(e){
+        result.error=e;
+        return result;
+    }
+};
+
+exports.readFavoriteModel = async(id) => {
+    const result = {};
+    try{
+        const favorite = await prisma.wishlist.findMany({
             where:{
-                user_id: id
+                user_id: parseInt(id),
+                is_favorite: true
             }
         });
-        result.data = wishlist
+        result.data = favorite
         return result
     }
     catch(e){
@@ -20,7 +39,7 @@ exports.readWishlistModel = async(id) => {
 };
 
 
-exports.updateWishlist =(id, data, cb)=>{
+exports.updateFavorite =(id, data, cb)=>{
     db.query('BEGIN', err=>{
       if(err){
         console.log('error 1');
@@ -53,11 +72,20 @@ exports.updateWishlist =(id, data, cb)=>{
     });
   };
 
-
-exports.createWishlist = async (data) => {
-    const wishlist = await prisma.wishlist.create({
-        data
-    });
-    return wishlist;
-}
-
+  exports.deleteFavoriteModel = async(id) => {
+    const result = {};
+    try{
+        const favorite = await prisma.wishlist.update({
+            where:{
+                user_id: parseInt(id),
+                is_favorite: false
+            }
+        });
+        result.data = favorite
+        return result
+    }
+    catch(e){
+        result.error = e;
+        return result
+    }
+};

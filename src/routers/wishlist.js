@@ -1,7 +1,11 @@
-const wishlist = require('express').Router()
+
+const wishlist = require('express').Router();
 const wishlistController = require('../controllers/wishlist');
-const authMiddleware = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
-wishlist.post('/wishlist', authMiddleware, wishlistController.createWishlist);
+wishlist.get('/all-wishlist',auth,wishlistController.readWishlist);
+wishlist.post('/create-wishlist',auth,wishlistController.createWishlist);
+wishlist.patch('/update-wishlist/:id', auth, wishlistController.updateWishlist);
 
-module.exports = wishlist;
+module.exports=wishlist
+
