@@ -1,13 +1,35 @@
 const prisma = require("../helpers/prisma")
+const db = require('../helpers/db');
 
 
-exports.getAllProducts = async () => {
+exports.getAllProducts = async (searchBy,search,sortBy,sort,limit,offset) => {
     const products = await prisma.products.findMany({
+        skip:offset,
+        take:limit,
         where: {
-            is_archive: false
-        }
+            is_archive: false,
+            AND:{
+                product_name:{
+                    contains:`${search}`
+                }
+            }
+        },
+        orderBy:{
+            ...(sortBy==='product_name'?{product_name : sort}:sortBy==='price'?{price:sort}:sortBy==='created_at'?{created_at:sort}:{})
+        },
     });
     return products;
+}
+
+exports.countAllProductsModel=(searchBy,search,cb) =>{
+    const que = `SELECT * FROM products WHERE ${searchBy} LIKE '%${search}%'`
+    db.query(que,(err,res)=>{
+        if(err){
+            cb(err);
+        }else{
+            cb(err,res.rowCount);
+        }
+    })
 }
 
 exports.getProductById = async (id) => {

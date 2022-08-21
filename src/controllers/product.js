@@ -1,12 +1,24 @@
 const errorResponse = require('../helpers/errorResponse');
 const response = require('../helpers/standardResponse');
 const productModel = require('../models/product');
+const {LIMIT_DATA} = process.env;
 
 exports.getAllProduct = async (req, res) => {
+    const {searchBy='product_name',search='',sortBy='created_at',sort='asc',limit=12, page=1}=req.query;
+    const offset = (page-1) * limit;
     try {
-        const products = await productModel.getAllProducts();
-        return response(res, 'Success get all Products', products);
+        const products = await productModel.getAllProducts(searchBy,search,sortBy,sort,limit,offset);
+        const pageInfo = {};
+        productModel.countAllProductsModel(searchBy,search,(err,totalusers)=>{
+            pageInfo.totalData = totalusers;
+            pageInfo.totalPage = Math.ceil(totalusers/limit);
+            pageInfo.curretPage = parseInt(page);
+            pageInfo.nextPage = pageInfo.curretPage < pageInfo.totalPage? pageInfo.curretPage+1:null;
+            pageInfo.prevPage = pageInfo.curretPage > 1 ? pageInfo.curretPage-1:null;
+            return response(res, 'Success get all Products', products,pageInfo);
+        });
     } catch (error) {
+        console.log(error);
         return errorResponse(error, res);
     }
 }
