@@ -21,6 +21,29 @@ exports.getAllProducts = async (searchBy,search,sortBy,sort,limit,offset) => {
     return products;
 }
 
+exports.getAllProductsUser = async (idUser, limit, offset) => {
+    const product = await prisma.products.findMany({
+        skip: offset,
+        take: limit,
+        where: {
+            user_id: idUser
+        },
+        orderBy: {
+            created_at: 'desc'
+        }
+    });
+    return product;
+}
+
+exports.countAllProductsUser = async (idUser) => {
+    const countData = await prisma.products.count({
+        where: {
+            user_id: idUser
+        }
+    });
+    return countData;
+}
+
 exports.countAllProductsModel=(searchBy,search,cb) =>{
     const que = `SELECT * FROM products WHERE ${searchBy} LIKE '%${search}%'`
     db.query(que,(err,res)=>{
@@ -63,7 +86,8 @@ exports.createProduct = async (data) => {
                 sku: data.sku,
                 product_images: data.product_images,
                 is_archive: data.is_archive,
-                sold: data.sold
+                sold: data.sold,
+                user_id: data.user_id
             }
         });
     console.log(product);

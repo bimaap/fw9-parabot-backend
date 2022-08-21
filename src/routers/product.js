@@ -3,7 +3,8 @@ const authMiddleware = require('../middleware/auth');
 const productController = require('../controllers/product');
 const uploudMiddleware = require('../middleware/upload');
 
-product.get('/products', authMiddleware, productController.getAllProduct);
+product.get('/products', productController.getAllProduct);
+product.get('/myProducts', authMiddleware, productController.getAllProductsUser);
 product.get('/products/:id', authMiddleware, productController.getProductById);
 product.post('/products', authMiddleware, uploudMiddleware, productController.createProduct);
 product.patch('/products/:id', authMiddleware, productController.updateProduct);
