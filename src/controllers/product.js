@@ -3,8 +3,12 @@ const response = require('../helpers/standardResponse');
 const productModel = require('../models/product');
 
 exports.getAllProduct = async (req, res) => {
-    const products = await productModel.getAllProducts();
-    return response(res, 'Success get all Products', products);
+    try {
+        const products = await productModel.getAllProducts();
+        return response(res, 'Success get all Products', products);
+    } catch (error) {
+        return errorResponse(error, res);
+    }
 }
 
 exports.getProductById = async (req, res) => {
@@ -33,13 +37,53 @@ exports.createProduct = async (req, res) => {
         }
     }
     if(req.files){
-        req.body.product_images = `${req.files.map((el)=>el.filename)}`
+        req.body.product_images = `${req.files.map((el)=>el.path)}`
     }
+    req.body.is_archive = false;
     // console.log(req.body)
     // console.log(req.files)
+    if(req.body.category_id){
+        req.body.category_id = parseInt(req.body.category_id, 10);
+    }
+    req.body.sold=0;
+    
     try {
         const product = await productModel.createProduct(req.body);
         return response(res, 'Success create product', product);
+    } catch (error) {
+        // console.log(error);
+        return errorResponse(error, res);
+    }
+}
+
+exports.updateProduct = async (req, res) => {
+    const idProduct = parseInt(req.params.id, 10);
+    try {
+        if(req.body.is_archive){
+            if(req.body.is_archive=='true'){
+                req.body.is_archive = true;
+            } else {
+                req.body.is_archive = false;
+            }
+        } else {
+            req.body.is_archive = false;
+        }
+        req.body.price = parseInt(req.body.price, 10);
+        req.body.stock = parseInt(req.body.stock, 10);
+        req.body.discount = parseFloat(req.body.discount/100);
+        const product = await productModel.updateProduct(idProduct, req.body);
+        return response(res, 'success for update product.', product);
+    } catch (error) {
+        // console.log(error)
+        return errorResponse(error, res);
+    }
+}
+
+exports.deleteProduct = async (req, res) => {
+    const idProduct = parseInt(req.params.id);
+    try {
+        const product = await productModel.deleteProduct(idProduct);
+        return response(res, 'Success deleted product.', product);
     } catch (error) {
         return errorResponse(error, res);
     }
