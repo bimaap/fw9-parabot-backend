@@ -7,84 +7,37 @@ exports.createRegister = (data,cb) =>{
       console.log(err);
       cb(err);}
     else{
-      const queryUserCostumer = 'INSERT INTO users_costumer (email, password) VALUES ($1, $2, $3) RETURNING*';
-      const valUser = [data.email, data.password];
+      const queryUserCostumer = 'INSERT INTO users (email, password,role) VALUES ($1, $2, $3) RETURNING*';
+      const valUser = [data.email, data.password,data.role];
       db.query(queryUserCostumer,valUser,(err,res)=>{
-        if(err){
-          cb(err);
-        }else{
-          const queryProfileCostumer = 'INSERT INTO profile_costumer (costumer_id) VALUES ($1)';
-          const valProfile = [res.rows[0].id];
-          db.query(queryProfileCostumer,valProfile,(err)=>{
-            if(err){
-              cb(err);
-            }else{
-              const queryMyBag = 'INSERT INTO bag (user_id) VALUES ($1)';
-              db.query(queryMyBag, valProfile, (err, res)=>{
-                if(err){
-                  cb(err);
-                }else{
-                  cb(err,res);
-                  db.query('COMMIT',err=>{
-                    if(err){
-                      console.log(err);
-                    }
-                  });
-                }
-              });
+      if(err){
+        cb(err);
+      }else{
+        const queryProfileCostumer = 'INSERT INTO profiles (user_id) VALUES ($1)';
+        const valProfile = [res.rows[0].id];
+        db.query(queryProfileCostumer,valProfile,(err)=>{
+          if(err){
+            cb(err);
+          }else{
+            cb(err,res);
+            db.query('COMMIT',err=>{
+              if(err){
+                console.log(err);
+              }
+            });
             }
           });
         }
       });
     }
   });
-};
+}
 
 
-exports.getUserCostumerByEmail = (email, cb) => {
-  const quer = 'SELECT * FROM users_costumer WHERE email=$1';
+exports.getUserByEmail = (email, cb) => {
+  const quer = 'SELECT * FROM users WHERE email=$1';
   const value = [email];
   db.query(quer, value, (err, res)=>{
     cb(err, res);
-  });
-};
-
-exports.getUserSellerByEmail = (email, cb) => {
-  const quer = 'SELECT * FROM users_seller WHERE email=$1';
-  const value = [email];
-  db.query(quer, value, (err, res)=>{
-    cb(err, res);
-  });
-};
-
-exports.createRegisterSeller = (data,cb) =>{
-  db.query('BEGIN', err=>{
-    if(err){
-      console.log(err);
-      cb(err);}
-    else{
-      const queryUserCostumer = 'INSERT INTO users_seller (email, password) VALUES ($1, $2) RETURNING*';
-      const valUser = [data.email, data.password];
-      db.query(queryUserCostumer,valUser,(err,res)=>{
-        if(err){
-          cb(err);
-        }else{
-          const queryProfileSeller = 'INSERT INTO profile_store (seller_id) VALUES ($1)';
-          const valProfile = [res.rows[0].id];
-          db.query(queryProfileSeller,valProfile,(err)=>{
-            if(err){
-              cb(err);
-            }else{
-              cb(err,res);
-              db.query('COMMIT',err=>{
-                if(err){
-                  console.log(err);
-                }
-              });
-            }
-          });
-        }
-      });
-    }
   });
 };
