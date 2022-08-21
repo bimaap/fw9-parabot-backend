@@ -7,5 +7,7 @@ router.use('/',require('./notification'));
 router.use('/', require('./product'));
 router.use('/',require('./auth'))
 router.use('/', require('./categories'));
+router.use('/', require('./wishlist'));
+router.use('/', require('./cart'));
 
 module.exports=router
