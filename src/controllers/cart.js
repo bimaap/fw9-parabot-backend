@@ -53,7 +53,7 @@ exports.createOrder=(req, res)=>{
 
 exports.getCartUser=(req, res)=>{
     const id = parseInt(req.authUser.id)
-    cartModel.updateCart(id, (err, res)=>{
+    cartModel.getCartUser(id, (err, res)=>{
       if(err){
         return errorResponse(err,res);
       }
