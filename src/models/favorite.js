@@ -52,7 +52,7 @@ exports.updateFavorite =(id, data, cb)=>{
           }else{
             const q2= 'DELETE FROM wishlist WHERE ID=$1 RETURNING *';
             const val2 = [id];
-            console.log(id);
+            // console.log(id);
             db.query(q2, val2, (err, res)=>{
               console.log(err);
               if(err){
