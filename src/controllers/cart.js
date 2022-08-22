@@ -26,3 +26,27 @@ exports.createCart = async (req, res) => {
         return errorResponse(error, res);
     }    
 }
+
+exports.updateCart=(req, res)=>{
+    const { id } = req.params;
+    cartModel.updateCart(id, req.body, (err)=>{
+      if(err){
+        return errorResponse(err,res);
+      }
+      else{
+        return response(res, 'Create user succesfully');
+      }
+    });
+};
+
+exports.createOrder=(req, res)=>{
+    const {payment_status= 'pending'}=req.query
+    cartModel.createOrder(payment_status, req.body, (err)=>{
+      if(err){
+        return errorResponse(err,res);
+      }
+      else{
+        return response(res, 'Create user succesfully');
+      }
+    });
+};

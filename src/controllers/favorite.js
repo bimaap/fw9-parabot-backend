@@ -26,7 +26,7 @@ exports.readFavorite = async(req,res)=>{
 
 exports.updateFavorite=(req, res)=>{
     const { id } = req.params;
-    favoriteModel.updateFavorite.updateFavorite(id, req.body, (err)=>{
+    favoriteModel.updateFavorite(id, req.body, (err)=>{
       if(err){
         return errorResponse(err,res);
       }
