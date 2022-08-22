@@ -7,8 +7,8 @@ const router = require('express').Router();
 const profileCustomerRoutes = require("../routers/profileCustomer");
 const profileSellerRoutes = require("../routers/profileSeller");
 
-router.use("/profile", profileCustomerRoutes);
-router.use("/profile", profileSellerRoutes);
+router.use("/", profileCustomerRoutes);
+router.use("/", profileSellerRoutes);
 
 
 router.use('/',require('./chats'));

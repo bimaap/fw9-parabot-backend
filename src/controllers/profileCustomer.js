@@ -1,7 +1,7 @@
 const response = require('../helpers/standardResponse');
 const errorResponse = require('../helpers/errorResponse');
 const profileCustomerModel = require('../models/profileCustomer');
-// const { validationResult } = require('express-validator');
+const { validationResult } = require('express-validator');
 const { LIMIT_DATA } = process.env;
 
 exports.getAllCustomer = (req, res) => {
@@ -58,51 +58,51 @@ exports.getCustomerById = (req, res) => {
 };
 
 exports.createCustomer = (req, res) => {
-  // const validation = validationResult(req);
-  // if (!validation.isEmpty()) {
-  //   return response(
-  //     res,
-  //     'Please fill data correctly',
-  //     validation.array(),
-  //     null,
-  //     400
-  //   );
-  // }
-  // profileCustomerModel.createCustomer(req.body, (results) => {
-  //   // console.log(req.body);
-  //   return response(res, 'Create profile successfully', results);
-  // });
+  const validation = validationResult(req);
+  if (!validation.isEmpty()) {
+    return response(
+      res,
+      'Please fill data correctly',
+      validation.array(),
+      null,
+      400
+    );
+  }
+  profileCustomerModel.createCustomer(req.body, (results) => {
+    // console.log(results);
+    return response(res, 'Create profile successfully', results);
+  });
 };
 
+
 exports.updateCustomer = (req, res) => {
-  // const { id } = req.params;
+  const { id } = req.params;
 
-  // let filename = null;
+  let filename = null;
 
-  // if (req.file) {
-  //   filename = req.file.filename;
-  // }
-  // const validation = validationResult(req);
-  // if (!validation.isEmpty()) {
-  //   return response(
-  //     res,
-  //     'Please fill data correctly',
-  //     validation.array(),
-  //     null,
-  //     400
-  //   );
-  // }
+  if (req.file) {
+    filename = req.file.filename;
+  }
+  const validation = validationResult(req);
+  if (!validation.isEmpty()) {
+    return response(
+      res,
+      "Please fill data correctly",
+      validation.array(),
+      null,
+      400
+    );
+  }
 
-  // profileCustomerModel.updateCustomer(id, filename, req.body, (err, results) => {
-  //   if (err) {
-  //     return errorResponse(
-  //       res,
-  //       `Failed to update: ${err.message}, null, null, 400`
-  //     );
-  //   } else {
-  //     return response(res, 'Profile updated successfully', results.rows[0]);
-  //   }
-  // });
+  profileCustomerModel.updateCustomer(id, filename, req.body, (err, results) => {
+    // console.log(err)
+    if (err) {
+      return response(res,`failed update ${err.message}`, null, 400);
+    } else {
+      console.log(response)
+      return response(res, "Profile updated successfully", results.rows[0]);
+    }
+  });
 };
 
 exports.deleteCustomer = (req, res) => {

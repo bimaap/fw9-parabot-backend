@@ -11,13 +11,6 @@ app.use('/images', express.static('assets'));
 
 app.use('/',require('./src/routers'));
 
-app.get('/',(req,res)=>{
-  return res.status(200).json ({
-    status:true,
-    msg:'Connected Server'
-  });
-});
-
 const port = process.env.PORT;
 
 app.use('*',(req, res)=>{
@@ -30,3 +23,5 @@ app.use('*',(req, res)=>{
 app.listen(port, ()=>{
     console.log(`Our server is running on port: ${port}`);
 });
+
+
