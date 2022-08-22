@@ -53,12 +53,12 @@ exports.createOrder=(req, res)=>{
 
 exports.getCartUser=(req, res)=>{
     const id = parseInt(req.authUser.id)
-    cartModel.getCartUser(id, (err, res)=>{
+    cartModel.getCartUser(id, (err, results)=>{
       if(err){
         return errorResponse(err,res);
       }
       else{
-        return response(res, 'Get all cart user succesfully');
+        return response(res, 'Get all cart user succesfully', results.rows);
       }
     });
 };

@@ -74,13 +74,14 @@ exports.createOrder=(status_payment, data, cb)=>{
 };
 
 exports.getCartUser = (id, cb)=>{
-    const q = 'SELECT * FROM cart join product on product.id=cart.product_id WHERE user_id=$1';
+    const q = 'SELECT * FROM products join cart on cart.product_id=products.id WHERE cart.user_id=$1';
     const val = [id];
     db.query(q, val, (err, res)=>{
       // console.log(res);
       if(res){
         cb(err, res);
       }else{
+        console.log(err);
         cb(err);
       }
     });
