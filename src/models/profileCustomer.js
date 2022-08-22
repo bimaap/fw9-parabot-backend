@@ -14,7 +14,7 @@ exports.getAllCustomer = (
     [limit, offset],
     (err, res) => {
       // console.log(err);
-      cb(err, res.rows);
+      cb(err, res);
     }
   );
 };
@@ -39,15 +39,15 @@ exports.getCustomerById = (id, cb) => {
   });
 };
 
-exports.createCustomer = (data, cb) => {
+exports.createCustomer = (picture, data, cb) => {
    
   const q =
   'INSERT INTO profiles (full_name, gender, image, store_name, store_desc, phone_num, bio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
-  const val = [data.full_name, data.gender, data.image, data.store_name, data.store_desc, data.phone_num, data.bio, data.user_id];
+  const val = [data.full_name, data.gender, picture, data.store_name, data.store_desc, data.phone_num, data.bio, data.user_id];
 
   db.query(q, val, (err, res) => {
-    cb(res);
-    // console.log(err); 
+    cb(err, res);
+    console.log(val); 
   });
 };
 
@@ -77,10 +77,10 @@ exports.updateCustomer = (id, picture, data, cb) => {
 
   const key = Object.keys(filtered);
   const finalResult = key.map((o, ind) => `${o}=$${ind + 2}`);
-console.log(finalResult)
+// console.log(finalResult)
   const q = `UPDATE profiles SET ${finalResult} WHERE id=$1 RETURNING *`;
   db.query(q, val, (err, res) => {
-    console.log(val)
+    // console.log(val)
     if (res) {
       cb(err, res);
     } else {

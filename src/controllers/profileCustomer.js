@@ -22,7 +22,7 @@ exports.getAllCustomer = (req, res) => {
     limit,
     offset,
     (err, results) => {
-      // console.log(err);
+      console.log(results);
       if (results.length < 1) {
         return response(res, 'Data not found', null, 404);
       }
@@ -61,6 +61,12 @@ exports.getCustomerById = (req, res) => {
 };
 
 exports.createCustomer = (req, res) => {
+  // console.log(req, 99)
+  let filename = null;
+    
+  if (req.files[0]) {
+    filename = req.files[0].path;
+  }
   const validation = validationResult(req);
   if (!validation.isEmpty()) {
     return response(
@@ -71,9 +77,14 @@ exports.createCustomer = (req, res) => {
       400
     );
   }
-  profileCustomerModel.createCustomer(req.body, (results) => {
-    // console.log(results);
-    return response(res, 'Create profile successfully', results);
+  profileCustomerModel.createCustomer(filename, req.body, (err, results) => {
+    // console.log(filename);
+    if (err) {
+      return response(res,`failed create ${err.message}`, null, 400);
+    } else {
+      // console.log(response)
+      return response(res, "Profile created successfully", results.rows[0]);
+    }
   });
 };
 
@@ -82,9 +93,9 @@ exports.updateCustomer = (req, res) => {
   const { id } = req.params;
 
   let filename = null;
-
-  if (req.file) {
-    filename = req.file.filename;
+    console.log(req.files[0])
+  if (req.files[0]) {
+    filename = req.files[0].path;
   }
   const validation = validationResult(req);
   if (!validation.isEmpty()) {
