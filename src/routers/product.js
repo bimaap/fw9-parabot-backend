@@ -3,6 +3,7 @@ const authMiddleware = require('../middleware/auth');
 const productController = require('../controllers/product');
 const uploudMiddleware = require('../middleware/upload');
 
+product.get('/products/details/:id',productController.getProductById);
 product.get('/products', productController.getAllProduct);
 product.get('/myProducts', authMiddleware, productController.getAllProductsUser);
 product.get('/products/:id', authMiddleware, productController.getProductById);

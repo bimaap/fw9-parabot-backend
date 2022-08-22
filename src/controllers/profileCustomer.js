@@ -48,8 +48,11 @@ exports.getCustomerById = (req, res) => {
   const { id } = req.params;
 
   profileCustomerModel.getCustomerById(id, (err, results) => {
-    console.log(results);
-    if (results.rows.length > 0) {
+    console.log(results.rows);
+    if(err){
+      return errorResponse(err,res);
+    }
+    if (results.rowCount > 0) {
       return response(res, `Success get data by id : ${id}`, results.rows);
     } else {
       return response(res, `data by id : ${id} not found`, null, 404);

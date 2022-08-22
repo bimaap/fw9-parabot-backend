@@ -29,12 +29,13 @@ exports.countAllCustomer = (keyword, cb) => {
 };
 
 exports.getCustomerById = (id, cb) => {
-  const q =  'SELECT * FROM profiles WHERE id=$1';
-  const val = [id];
-
-  db.query(q, val, (err, res) => {
-    // console.log(res);
-    cb(err, res);
+  const q =  `SELECT * FROM profiles WHERE user_id=${id}`;
+  db.query(q, (err, res) => {
+    if(err){
+      cb(err)
+    }else{
+      cb(err, res);
+    }
   });
 };
 
