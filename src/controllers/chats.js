@@ -40,7 +40,7 @@ exports.wrapperGetAll = (req,res) =>{
 };
 
 exports.getAllChat = async(req,res) => {
-    const id = parseInt(req.authUser.id);
+    const id = parseInt(req.params.id);
     chatsModel.getAllChatsModel(id,(err,result)=>{
         if(err){
             console.log(err);
