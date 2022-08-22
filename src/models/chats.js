@@ -27,7 +27,7 @@ exports.sendContentModel = async(sender,body) => {
             data:{
                 content:body.content,
                 recepient_id:parseInt(body.recepient_id),
-                sender_id:sender,
+                sender_id:parseInt(sender),
                 chat_id:parseInt(body.chat_id)
             }
         })
