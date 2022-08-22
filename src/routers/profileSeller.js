@@ -3,25 +3,25 @@ const router = require('express').Router();
 const profileSellerController = require("../controllers/profileSeller");
 
 router.get(
-    "/seller",  
+    "/profile/seller",  
     profileSellerController.getAllSeller
   );
 router.get(
-   "/seller/:id",
+   "/profile/seller/:id",
 
     profileSellerController.getSellerById
   );
 
 router.patch(
-    "/seller/:id", profileSellerController.updateSeller
+    "/profile/seller/:id", profileSellerController.updateSeller
   );
 
 //Admin
 router.post(
-    "/admin/seller/:id", profileSellerController.createSeller
+    "/profile/admin/seller/:id", profileSellerController.createSeller
   );
 router.delete(
-    "/admin/seller/:id",
+    "/profile/admin/seller/:id",
     profileSellerController.deleteSeller
   );
   
