@@ -48,7 +48,7 @@ exports.wrapperChatModel = (id,cb) =>{
             cb(err);
         }else{
             if(res.rows[0].sender_id==id){
-                const que = `SELECT profiles.full_name,chats.id,chats.recepient_id,chats.sender_id FROM profiles JOIN chats ON chats.recepient_id=profiles.user_id WHERE profiles.user_id=${res.rows[0].recepient_id}`
+                const que = `SELECT profiles.image,profiles.full_name,chats.id,chats.recepient_id,chats.sender_id FROM profiles JOIN chats ON chats.recepient_id=profiles.user_id WHERE profiles.user_id=${res.rows[0].recepient_id}`
                 db.query(que,(err,res)=>{
                     if(err){
                         cb(err);
