@@ -9,7 +9,7 @@ exports.getAll = async (req, res) => {
       message: "List checkouts",
       results: checkouts
     });
-  };
+};
 
 exports.post = async (req, res) => {
     const data = {
@@ -27,6 +27,7 @@ exports.post = async (req, res) => {
             results: checkouts
         });
     } catch (error) {
+        console.log(error);
         return res.json({
             success: false,
             message: "Failed",
