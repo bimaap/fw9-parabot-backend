@@ -50,3 +50,15 @@ exports.createOrder=(req, res)=>{
       }
     });
 };
+
+exports.getCartUser=(req, res)=>{
+    const id = parseInt(req.authUser.id)
+    cartModel.updateCart(id, (err, res)=>{
+      if(err){
+        return errorResponse(err,res);
+      }
+      else{
+        return response(res, 'Get all cart user succesfully');
+      }
+    });
+};
