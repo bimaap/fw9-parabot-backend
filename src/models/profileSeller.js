@@ -38,50 +38,54 @@ exports.getSellerById = (id, cb) => {
   });
 };
 
-exports.createSeller = (data, cb) => {
+exports.createSeller = (picture, data, cb) => {
   
-  // const q =
-  //   'INSERT INTO profiles (created_at, full_name, gender, image, store_name, store_desc, phone_num, bio) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
-  // const val = [data.created_at, data.fullname, data.gender, data.image, data.store_name, data.store_desc, data.phone_num, data.bio];
+  const q =
+  'INSERT INTO profiles (full_name, gender, image, store_name, store_desc, phone_num, bio, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+  const val = [data.full_name, data.gender, picture, data.store_name, data.store_desc, data.phone_num, data.bio, data.user_id];
 
-  // db.query(q, val, (err, res) => {
-  //   cb(res);
-  //   console.log(err);
-  // });
+  db.query(q, val, (err, res) => {
+    cb(err, res);
+    console.log(val); 
+  });
 };
 
 exports.updateSeller = (id, picture, data, cb) => {
-  // console.log();
-  // let val = [id];
+  console.log();
+  let val = [id];
 
-  // const filtered = {};
+  const filtered = {};
 
-  // const objt = {
-  //   picture,
-  //   full_name: data.full_name,
-  //   phone: data.phone,
-  //   gender: data.gender,
-  //   birth_date:data.birth_date
-  // };
+  const objt = {
+    full_name: data.full_name,
+    gender: data.gender,
+    image: picture,
+    store_name: data.store_name,
+    store_desc: data.store_desc,
+    phone_num: data.phone_num,
+    bio: data.bio,
+    user_id: data.user_id,
+  };
 
-  // for (let x in objt) {
-  //   if (objt[x] !== null) {
-  //     filtered[x] = objt[x];
-  //     val.push(objt[x]);
-  //   }
-  // }
+  for (let x in objt) {
+    if (objt[x] !== null  && objt[x]!= '') {
+      filtered[x] = objt[x];
+      val.push(objt[x]);
+    }
+  }
 
-  // const key = Object.keys(filtered);
-  // const finalResult = key.map((o, ind) => `${o}=$${ind + 2}`);
-
-  // const q = `UPDATE profiles SET ${finalResult} WHERE id=$1 RETURNING *`;
-  // db.query(q, val, (err, res) => {
-  //   if (res) {
-  //     cb(err, res);
-  //   } else {
-  //     cb(err, res);
-  //   }
-  // });
+  const key = Object.keys(filtered);
+  const finalResult = key.map((o, ind) => `${o}=$${ind + 2}`);
+// console.log(finalResult)
+  const q = `UPDATE profiles SET ${finalResult} WHERE id=$1 RETURNING *`;
+  db.query(q, val, (err, res) => {
+    // console.log(val)
+    if (res) {
+      cb(err, res);
+    } else {
+      cb(err, res);
+    }
+  });
 };
 
 exports.deleteSeller = (id, cb) => {
